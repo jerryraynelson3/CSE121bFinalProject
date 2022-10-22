@@ -37,7 +37,9 @@ async function retrieveRaceData(){
 
     let race = dropdown.options[dropdown.selectedIndex].innerHTML;
 
-    let raceData = await fetch(`https://www.dnd5eapi.co/api/races/${race}`);
+    let url = `https://www.dnd5eapi.co/api/races/${race}`;
+
+    let raceData = await fetch(url);
 
     let raceDataJS =  await raceData.json();
 
