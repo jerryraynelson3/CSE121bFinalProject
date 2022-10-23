@@ -39,21 +39,75 @@ async function retrieveRaceData(){
 
     let url = `https://www.dnd5eapi.co/api/races/${race}`;
 
-    let raceData = await fetch(url);
+    var raceDataTemp;
 
-    let raceDataJS =  await raceData.json();
+    try{
 
-    return raceDataJS;
+        raceDataTemp = await fetch(url).then((response) => response.json());
+
+    }
+    catch(err){
+
+        alert("Error Message : " + err.message);
+
+    }
+    // let raceDataJS =  await raceDataTemp.json();
+
+    return raceDataTemp;
 
 }
 
-async function raceCustomization(data){
+function raceCustomization(data){
 
-    console.dir(data);
+    let raceDetails = {};
+    let abilityBonus = data.ability_bonuses[0].ability_score.index;
+    let abilityBonusNo = data.ability_bonuses[0].bonus;
+    let givenProficiencies = data.starting_proficiencies;
+    let proficiencies = [];
 
-    // let abilityBonus = data.ability_bonuses[0].ability_score.index;
+    raceDetails['abilityBonus'] = abilityBonus;
+    raceDetails['abilityBonusNo'] = abilityBonusNo;
 
-    // alert(abilityBonus);
+    for(i = 0; i < givenProficiencies.length; i++){
+
+        proficiencies[i] = givenProficiencies[i].index;
+
+    }
+
+    raceDetails['proficiencies'] = proficiencies;
+
+    let givenLanguages = data.languages;
+    let languages = [];
+
+    for(i = 0; i < givenLanguages.length; i++){
+
+        languages[i] = givenLanguages[i].index;
+
+    }
+
+    raceDetails['Languages'] = languages;
+
+    let givenTraits = data.traits;
+    let traits = [];
+
+    for(i = 0; i < givenTraits.length; i++){
+
+        traits[i] = givenTraits[i].index;
+
+    }
+
+    raceDetails['traits'] = traits;
+
+    var subrace;
+    let subraces = data.subraces;
+
+    if(subraces.length != 0){
+    subrace = subraces[0].index;
+    }
+
+    raceDetails['subrace'] = subrace;
+
+    return raceDetails;
 
 }
 
@@ -94,6 +148,12 @@ async function retrieveClassData(){
 
 }
 
+function classCustomization(data){
+
+    let classDetails = {};
+
+}
+
 async function director(){
 
     raceSelection();
@@ -105,12 +165,13 @@ async function director(){
 
     await btnClick(next);
 
-    let raceData = retrieveRaceData();
-    let classData = retrieveClassData();
+    let raceData = await retrieveRaceData();
+    let classData = await retrieveClassData();
 
     display.innerHTML = "";
 
-    raceCustomization(raceData);
+    let raceDetails = raceCustomization(raceData);
+    let classDetails = classCustomization(classData);
 
 }
 
